@@ -767,7 +767,9 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
           NSString *name = (NSString*)[[fileName componentsSeparatedByString: @"/"] lastObject];
           file = [NSURL fileURLWithPath:[self storeInFile:[name componentsSeparatedByString: @"?"][0] fileData:fileData]];
         } else {
-          file = [NSURL fileURLWithPath:[self storeInFile:[[name componentsSeparatedByString:@"="] lastObject] fileData:fileData]];
+          // Parse filename attribute of content disposition header
+          NSString *displayName = (NSString*)[[[[[[name componentsSeparatedByString: @"; filename*=UTF-8"] firstObject] stringByRemovingPercentEncoding] componentsSeparatedByString: @"="] lastObject] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+          file = [NSURL fileURLWithPath:[self storeInFile:displayName fileData:fileData]];
         }
       } else {
 	    NSString *name = (NSString*)[[fileName componentsSeparatedByString: @"/"] lastObject];
